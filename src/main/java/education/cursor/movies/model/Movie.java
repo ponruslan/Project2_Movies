@@ -26,7 +26,6 @@ public class Movie {
     private String director;
     private String description;
 
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "movie_id")
     @JsonView(Views.FullMovie.class)
