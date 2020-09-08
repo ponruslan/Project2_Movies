@@ -1,33 +1,46 @@
 package education.cursor.movies.config;
 
+import education.cursor.movies.model.User;
 import io.jsonwebtoken.*;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 
 @Component
 @Log
 public class JwtProvider {
 
     @Value("$(jwt.secret)")
-    private String jwtSecret;
+    private String secret;
+    @Value("${jwt.expiration}")
+    private String expirationTime;
 
-    public String generateToken(String login) {
-        Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    public String generateToken(User user) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRoles());
+        long expirationSeconds = Long.parseLong(expirationTime);
+        Date creationDate = new Date();
+        Date expirationDate = new Date(creationDate.getTime() + expirationSeconds * 1000);
         return Jwts.builder()
-                .setSubject(login)
-                .setExpiration(date)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setClaims(claims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(creationDate)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
+    }
+
+    public String extractUsername(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
             log.severe("Token expired");
@@ -41,10 +54,5 @@ public class JwtProvider {
             log.severe("invalid token");
         }
         return false;
-    }
-
-    public String getLoginFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        return claims.getSubject();
     }
 }
