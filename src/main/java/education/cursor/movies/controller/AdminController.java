@@ -5,6 +5,7 @@ import education.cursor.movies.model.Movie;
 import education.cursor.movies.model.Views;
 import education.cursor.movies.service.MovieService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("admin")
+@Secured("ROLE_ADMIN")
 public class AdminController {
 
     private final MovieService movieService;
