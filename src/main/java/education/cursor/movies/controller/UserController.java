@@ -16,6 +16,7 @@ public class UserController {
 
     private final MovieService movieService;
 
+
     @GetMapping("all")
     @JsonView(Views.ShortMovie.class)
     public List<Movie> list() {
