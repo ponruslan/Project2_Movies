@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("admin")
@@ -33,11 +31,5 @@ public class AdminController {
     @JsonView(Views.FullMovie.class)
     public Movie update(@PathVariable("id") Movie movieFromDb, @RequestBody Movie movie) {
         return movieService.update(movieFromDb, movie);
-    }
-
-    @GetMapping("all")
-    @JsonView(Views.ShortMovie.class)
-    public List<Movie> list() {
-        return movieService.findAll();
     }
 }
