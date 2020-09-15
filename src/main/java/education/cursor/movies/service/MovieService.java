@@ -4,15 +4,23 @@ import education.cursor.movies.model.Movie;
 import education.cursor.movies.model.MovieCategory;
 import education.cursor.movies.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static education.cursor.movies.model.MovieCategory.*;
 
 @Service
 @RequiredArgsConstructor
-public class MovieService {
+public abstract class MovieService {
 
     private final MovieRepository movieRepository;
+
+    private final MovieCategory movieCategory;
 
     public List<Movie> findAll() {
         return movieRepository.findAll();
@@ -25,6 +33,7 @@ public class MovieService {
     public void delete(Movie movie) {
         movieRepository.delete(movie);
     }
+
 
     public Movie update(Movie movieFromDb, Movie movie) {
         String name = movie.getName();
@@ -46,5 +55,9 @@ public class MovieService {
         }
 
         return movieRepository.save(movieFromDb);
+    }
+
+    public List<Movie> getAllMovieByCategory(Movie movie) {
+        return movieRepository.getAllByCategory(movie.getCategory());
     }
 }

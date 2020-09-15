@@ -15,6 +15,7 @@ import java.util.List;
 public class UserController {
 
     private final MovieService movieService;
+    private final Movie movie;
 
     @GetMapping("all")
     @JsonView(Views.ShortMovie.class)
@@ -28,4 +29,9 @@ public class UserController {
         return movie;
     }
 
+    @GetMapping("category/{id}")
+    @JsonView(Views.ShortMovie.class)
+    public List<Movie> movieList(@PathVariable("id") Movie movie) {
+        return movieService.getAllMovieByCategory(movie);
+    }
 }
