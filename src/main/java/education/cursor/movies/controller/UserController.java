@@ -9,6 +9,8 @@ import education.cursor.movies.model.Movie;
 import education.cursor.movies.model.User;
 import education.cursor.movies.model.Views;
 import education.cursor.movies.service.MovieService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -26,30 +28,34 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("movie")
+@Secured("ROLE_USER")
 public class UserController {
 
     private final MovieService movieService;
 
     @GetMapping("all")
     @JsonView(Views.ShortMovie.class)
-    public List<Movie> list() {
+    @ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
+    public List<Movie> findAll() {
         return movieService.findAll();
     }
 
     @GetMapping("{id}")
     @JsonView(Views.FullMovie.class)
-    public Movie getOne(@PathVariable("id") Movie movie) {
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "jwtToken")})
+    public Movie findById(@PathVariable("id") Movie movie) {
         return movie;
     }
 
     @GetMapping("category")
     @JsonView(Views.FullMovie.class)
-    public List<Movie> getAllByCategory(@RequestParam("category") String category) {
+    @ApiOperation(value = "", authorizations = { @Authorization(value="jwtToken") })
+    public List<Movie> findAllByCategory(@RequestParam("category") String category) {
         return movieService.findAllByCategory(category);
     }
 
     @PostMapping("rate")
-    @Secured("ROLE_USER")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "jwtToken")})
     public ResponseEntity rate(
             @RequestBody RateDto rateDto,
             @AuthenticationPrincipal User user) {

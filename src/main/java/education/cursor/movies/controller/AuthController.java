@@ -1,6 +1,7 @@
 package education.cursor.movies.controller;
 
 import education.cursor.movies.config.JwtProvider;
+import education.cursor.movies.dto.UserDto;
 import education.cursor.movies.model.User;
 import education.cursor.movies.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,10 @@ public class AuthController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/auth")
-    public ResponseEntity auth(@RequestBody User user) {
+    public ResponseEntity auth(@RequestBody UserDto userDto) {
         try {
-            String username = user.getUsername();
-            String password = user.getPassword();
+            String username = userDto.getUsername();
+            String password = userDto.getPassword();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             User userFromDB = (User) userService.loadUserByUsername(username);
 
